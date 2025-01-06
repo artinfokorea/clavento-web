@@ -1,7 +1,8 @@
-import React, { FormEvent, useState } from "react"
+"use client"
+
+import { useListSearchForm } from "@/hooks/useListSearchForm"
 import { Input } from "../ui/input"
 
-import { useRouter, useSearchParams } from "next/navigation"
 import { SearchIcon, XIcon } from "lucide-react"
 
 interface Props {
@@ -10,48 +11,21 @@ interface Props {
 }
 
 const ListSearchForm = ({ children, placeholder }: Props) => {
-  const searchParams = useSearchParams()
-  const keyword = searchParams.get("keyword") as string
-  const [searchInput, setSearchInput] = useState(keyword || "")
-  const router = useRouter()
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    const searchParams = new URLSearchParams(window.location.search)
-    searchParams.delete("keyword")
-
-    if (searchInput) {
-      searchParams.append("keyword", searchInput)
-    }
-
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`
-
-    router.push(newUrl)
-  }
-
-  const resetKeyword = () => {
-    setSearchInput("")
-    const searchParams = new URLSearchParams(window.location.search)
-    searchParams.delete("keyword")
-
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`
-
-    router.push(newUrl)
-  }
+  const { searchInput, handleSubmit, resetKeyword, handleSearchInput } =
+    useListSearchForm()
 
   return (
-    <div className="mx-auto mt-8 flex max-w-screen-sm flex-col items-center px-4 md:mt-20">
+    <div className="mx-auto mt-8 flex max-w-screen-sm flex-col items-center px-4 md:mt-4">
       {children}
       <form className="relative mt-2 w-full" onSubmit={handleSubmit}>
         <Input
           value={searchInput}
-          onChange={e => setSearchInput(e.target.value)}
-          className="w-full rounded-3xl border-2 border-main px-14 text-base text-black placeholder-gray-400 placeholder:text-sm focus:outline-none focus:ring-0 focus-visible:ring-0 md:py-6"
+          onChange={handleSearchInput}
+          className="h-[44px] w-full rounded-3xl border-2 border-main px-14 text-base text-black placeholder-gray-400 placeholder:text-sm focus:outline-none focus:ring-0 focus-visible:ring-0"
           placeholder={placeholder || "직군, 전공, 분야 등을 검색해보세요."}
         />
         <button type="submit">
-          <SearchIcon className="absolute left-5 top-[11px] h-5 w-5 text-gray-400 md:top-[14px] md:h-6 md:w-6" />
+          <SearchIcon className="absolute left-5 top-[11px] h-4 w-4 text-gray-400 md:top-[14px] md:h-5 md:w-5" />
         </button>
 
         {searchInput && (

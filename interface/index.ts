@@ -19,3 +19,9 @@ export type ScrollApiResponse<T, K extends string> = {
   nextPage: number
   isLast: boolean
 }
+
+export interface DetailResponse<T> {
+  data: T
+  type: string
+  exception?: string
+}

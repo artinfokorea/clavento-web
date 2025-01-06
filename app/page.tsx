@@ -1,4 +1,5 @@
 import { ArtistListPage } from "@/components/Artists/ArtistListPage"
+import ListSearchForm from "@/components/common/ListSearchForm"
 import { ListRequest, ListResponse } from "@/interface"
 import { Artist } from "@/types/artists"
 import React from "react"
@@ -31,13 +32,14 @@ export const getArtists = async (
 }
 
 const page = async () => {
-  const artists = await getArtists({ page: 1, size: 10 })
-
-  console.log("artists", artists)
-
   return (
-    <main>
-      <ArtistListPage artists={artists.data} />
+    <main className="pb-20">
+      <ListSearchForm placeholder="Explore Iconic musicians...">
+        <h4 className="text-sm font-medium md:text-lg">
+          Search the Sound of History
+        </h4>
+      </ListSearchForm>
+      <ArtistListPage />
     </main>
   )
 }

@@ -10,8 +10,27 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "CLAVENTO",
-  description: "CLAVENTO",
+  metadataBase: new URL("https://clavento.com"),
+  title: "Clavento | Classic Music Community",
+  description:
+    "Clavento can get and share a lot of information about classical music, performers, composers, and more.",
+  openGraph: {
+    title: "Clavento | Classic Music Community",
+    description:
+      "Clavento can get and share a lot of information about classical music, performers, composers, and more.",
+    url: "https://clavento.com",
+    siteName: "Clavento",
+    locale: "ko-KR",
+    type: "website",
+    images: [
+      {
+        url: "/clavento.png",
+        width: 380,
+        height: 380,
+        alt: "Clavento",
+      },
+    ],
+  },
 }
 
 export default function RootLayout({
@@ -21,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} h-screen antialiased`}>
         <ClientProvider>
           <Header />
           {children}

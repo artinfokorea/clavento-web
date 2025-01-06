@@ -1,4 +1,5 @@
-import { ListRequest } from "@/interface"
+import { DetailResponse, ListRequest } from "@/interface"
+import { Artist } from "@/types/artists"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -22,7 +23,7 @@ export const getArtists = async (request: ListRequest) => {
   return response.json()
 }
 
-export const getArtist = async (id: number) => {
+export const getArtist = async (id: number): Promise<Artist> => {
   const response = await fetch(`${API_URL}/artists/${id}`, {
     method: "GET",
     headers: {
@@ -34,7 +35,9 @@ export const getArtist = async (id: number) => {
     throw new Error("Failed to fetch artist")
   }
 
-  return response.json()
+  const result: DetailResponse<Artist> = await response.json()
+
+  return result.data
 }
 
 export const getInfiniteArtists = async (request: ListRequest) => {
