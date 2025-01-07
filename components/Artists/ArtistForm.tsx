@@ -44,19 +44,13 @@ export const ArtistForm = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-    setError,
-  } = useForm<ArtistFormData>({
-    resolver: zodResolver(artistSchema),
-    defaultValues: {
-      major: MajorType.ORCHESTRA,
-    },
-  })
+  const { register, handleSubmit, watch, setValue, setError } =
+    useForm<ArtistFormData>({
+      resolver: zodResolver(artistSchema),
+      defaultValues: {
+        major: MajorType.ORCHESTRA,
+      },
+    })
   const fileUploader = useRef<HTMLInputElement>(null)
 
   const openFileUploader = () => {
@@ -66,15 +60,13 @@ export const ArtistForm = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   const onSubmit = async (data: ArtistFormData) => {
-    console.log("1")
     if (!data.fileId) {
       setError("file", { message: "File is required" })
     }
-    console.log("2")
+
     if (!data.major) {
       setError("major", { message: "Major is required" })
     }
-    console.log("errors", errors)
 
     const payload: ArtistPayload = {
       name: data.name,
@@ -83,7 +75,7 @@ export const ArtistForm = () => {
       fileId: data.fileId as number,
       password: data.password,
     }
-    console.log("3")
+
     try {
       await createArtist(payload)
       successToast("Artist created successfully")
@@ -167,6 +159,7 @@ export const ArtistForm = () => {
         <div>
           <Input
             {...register("password")}
+            type="password"
             className="h-8 w-[220px] rounded-3xl border-main px-4 placeholder:text-sm placeholder:text-coolgray focus:outline-none focus-visible:ring-0"
             placeholder="Password"
           />
@@ -181,7 +174,7 @@ export const ArtistForm = () => {
         <Button
           type="button"
           onClick={handleSubmit(onSubmit)}
-          className="h-8 w-16 rounded-2xl bg-main text-xs font-semibold md:h-8"
+          className="h-8 w-16 rounded-2xl bg-main text-xs font-semibold hover:bg-main/80 md:h-8"
         >
           Submit
         </Button>

@@ -1,35 +1,6 @@
 import { ArtistListPage } from "@/components/Artists/ArtistListPage"
 import ListSearchForm from "@/components/common/ListSearchForm"
-import { ListRequest, ListResponse } from "@/interface"
-import { Artist } from "@/types/artists"
-import React from "react"
-
-export const getArtists = async (
-  request: ListRequest,
-): Promise<ListResponse<Artist>> => {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-  const queryParams = new URLSearchParams()
-  Object.entries(request).forEach(([key, value]) => {
-    if (value) queryParams.append(key, value.toString())
-  })
-
-  const response = await fetch(`${API_URL}/artists?${queryParams.toString()}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    next: {
-      tags: ["artists"],
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch artists")
-  }
-
-  return response.json()
-}
+import { Suspense } from "react"
 
 const page = async () => {
   return (
@@ -39,7 +10,9 @@ const page = async () => {
           Search the Sound of History
         </h4>
       </ListSearchForm>
-      <ArtistListPage />
+      <Suspense>
+        <ArtistListPage />
+      </Suspense>
     </main>
   )
 }

@@ -12,7 +12,7 @@ export const LinkButton = ({ text, href }: LinkButtonProps) => {
 
   return (
     <Button
-      className="h-6 w-16 rounded-2xl bg-main text-xs font-semibold md:h-8"
+      className="h-6 w-16 rounded-2xl bg-main text-xs font-semibold hover:bg-main/80 md:h-8"
       onClick={() => router.push(href)}
     >
       {text}

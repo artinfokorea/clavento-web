@@ -12,7 +12,7 @@ export const FileUploader = ({ ref, uploadedFile }: FileUploaderProps) => {
     if (!files) {
       return
     }
-    console.log("files", files)
+
     if (uploadedFile) {
       uploadedFile(files[0])
     }

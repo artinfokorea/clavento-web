@@ -18,8 +18,6 @@ export const ArtistDetailPage = ({ artist }: ArtistDetailPageProps) => {
     initialData: artist,
   })
 
-  console.log(artistDetail)
-
   return (
     <div className="mx-auto max-w-screen-md px-4">
       <div className="mb-8 flex items-center justify-between">

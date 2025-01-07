@@ -22,7 +22,7 @@ const Editor = ({ value, onChange }: Props) => {
             loader.file.then(async (file: File) => {
               try {
                 const response = await uploadFile(file)
-                console.log("response", response.data.id)
+
                 if (response) {
                   const file = await getFile(response.data.id)
                   const uploadedImageUrl = file.data.url

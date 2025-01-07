@@ -1,38 +1,16 @@
 import { ArtistDetailPage } from "@/components/Artists/ArtistDetailPage"
 import ListSearchForm from "@/components/common/ListSearchForm"
-import { DetailResponse } from "@/interface"
-import { Artist } from "@/types/artists"
+import { getArtist } from "@/lib/serverFetch"
+
 import { Metadata } from "next"
 import React from "react"
-
-const getArtist = async (artistId: string): Promise<DetailResponse<Artist>> => {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-  const response = await fetch(`${API_URL}/artists/${artistId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "force-cache",
-    next: {
-      tags: ["artists", artistId],
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch artists")
-  }
-
-  return response.json()
-}
 
 export const generateMetadata = async ({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }): Promise<Metadata> => {
-  const resolvedParams = await Promise.resolve(params)
-  const { id } = resolvedParams
+  const { id } = await params
 
   const { data } = await getArtist(id)
 
@@ -54,9 +32,8 @@ export const generateMetadata = async ({
   }
 }
 
-const page = async ({ params }: { params: { id: string } }) => {
-  const resolvedParams = await Promise.resolve(params)
-  const { id } = resolvedParams
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params
   const { data: artist } = await getArtist(id)
 
   return (
