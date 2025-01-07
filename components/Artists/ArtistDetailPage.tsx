@@ -28,7 +28,7 @@ export const ArtistDetailPage = ({ artist }: ArtistDetailPageProps) => {
           </h2>
           <h2 className="text-xl font-bold">{artistDetail.name}</h2>
         </div>
-        <MobileMajorFilter />
+        <MobileMajorFilter detail />
         <LinkButton text="List" href="/" />
       </div>
       <article className="flex flex-col gap-8 md:flex-row">

@@ -1,7 +1,7 @@
 import { useMajorFilter } from "@/hooks/Artists/useMajorFilter"
 import { MajorSelect } from "../common/MajorSelect"
 
-export const MobileMajorFilter = (detail?: boolean) => {
+export const MobileMajorFilter = ({ detail }: { detail?: boolean }) => {
   const { selectedMajor, isOpen, handleMajorClick, handleOpen } =
     useMajorFilter(detail)
 
