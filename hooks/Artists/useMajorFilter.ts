@@ -2,7 +2,7 @@ import { MajorType } from "@/types"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export const useMajorFilter = () => {
+export const useMajorFilter = (detail?: boolean) => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const majorType = searchParams.get("major")
@@ -24,12 +24,19 @@ export const useMajorFilter = () => {
     if (currentMajorType !== selectedMajor) {
       locationParams.delete("major")
       if (selectedMajor) locationParams.append("major", selectedMajor)
-      const newUrl = `${window.location.pathname}?${locationParams.toString()}`
-      router.push(newUrl, {
-        scroll: false,
-      })
+      if (detail) {
+        const newUrl = `/?${locationParams.toString()}`
+        router.push(newUrl, {
+          scroll: false,
+        })
+      } else {
+        const newUrl = `${window.location.pathname}?${locationParams.toString()}`
+        router.push(newUrl, {
+          scroll: false,
+        })
+      }
     }
-  }, [selectedMajor, router])
+  }, [selectedMajor, router, detail])
 
   return {
     selectedMajor,

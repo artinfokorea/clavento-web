@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query"
 import React from "react"
 import { LinkButton } from "../common/LinkButton"
 import FallbackImage from "../common/FallbackImage"
+import { MobileMajorFilter } from "./MobileMajorFilter"
 
 interface ArtistDetailPageProps {
   artist: Artist
@@ -20,13 +21,14 @@ export const ArtistDetailPage = ({ artist }: ArtistDetailPageProps) => {
 
   return (
     <div className="mx-auto max-w-screen-md px-4">
-      <div className="mb-8 flex items-center justify-end md:justify-between">
-        <div className="hidden w-full gap-2 md:block md:flex md:basis-1/3">
+      <div className="mb-8 flex items-center justify-between">
+        <div className="hidden w-full gap-2 md:flex md:basis-1/3">
           <h2 className="text-xl font-bold text-coolgray">
             {artistDetail.major}
           </h2>
           <h2 className="text-xl font-bold">{artistDetail.name}</h2>
         </div>
+        <MobileMajorFilter />
         <LinkButton text="List" href="/" />
       </div>
       <article className="flex flex-col gap-8 md:flex-row">
