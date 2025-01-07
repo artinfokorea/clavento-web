@@ -1,4 +1,5 @@
 import { DetailResponse, ListRequest } from "@/interface"
+import { ArtistPayload } from "@/interface/artists"
 import { Artist } from "@/types/artists"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -47,4 +48,16 @@ export const getInfiniteArtists = async (request: ListRequest) => {
     nextPage: request.page ? request.page + 1 : 2,
     isLast: response.data.length < request.size,
   }
+}
+
+export const createArtist = async (data: ArtistPayload) => {
+  const response = await fetch(`${API_URL}/artists`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+
+  return response.json()
 }

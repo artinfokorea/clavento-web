@@ -16,7 +16,7 @@ export const ArtistListPage = () => {
       <div className="flex items-center justify-between">
         <MobileMajorFilter />
         <DesktopMajorFilter />
-        <LinkButton text="Create" href="/artists/create" />
+        <LinkButton text="List" href="/" />
       </div>
       <div className="mt-4 grid grid-cols-2 gap-[20px] md:mt-[30px] md:grid-cols-3">
         {artistList?.pages.map(page =>

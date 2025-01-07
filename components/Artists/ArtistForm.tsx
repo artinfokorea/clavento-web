@@ -1,103 +1,193 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { Input } from "../ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { MajorType } from "@/types"
 import { Button } from "../ui/button"
-import { ChevronDownIcon, ChevronRightIcon } from "lucide-react"
-import { Transition } from "@headlessui/react"
+import { MajorSelect } from "../common/MajorSelect"
+import { FileUploader } from "../common/FileUploader"
+import { XIcon } from "lucide-react"
+import { uploadFile } from "@/services/system"
+import useToast from "@/hooks/useToast"
+import dynamic from "next/dynamic"
+import { Spinner } from "../common/Loading"
+import { createArtist } from "@/services/artists"
+import { ArtistPayload } from "@/interface/artists"
+import { useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+
+const CKEditor = dynamic(() => import("@/components/common/CkEditor"), {
+  loading: () => (
+    <div className="flex h-[400px] items-center justify-center">
+      <Spinner className="h-8 w-8" />
+    </div>
+  ),
+  ssr: false,
+})
 
 const artistSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   contents: z.string().min(1, { message: "Contents is required" }),
-  major: z.nativeEnum(MajorType),
-  password: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .max(10, { message: "Password must be less than 10 characters" }),
-  fileId: z.number().positive({ message: "File is required" }),
+  major: z.nativeEnum(MajorType).nullable(),
+  password: z.string().min(1, { message: "Password is required" }),
+  file: z.any().nullable(),
+  fileId: z.number().nullable(),
 })
 
 type ArtistFormData = z.infer<typeof artistSchema>
 
 export const ArtistForm = () => {
+  const { successToast, errorToast } = useToast()
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     formState: { errors },
+    setError,
   } = useForm<ArtistFormData>({
     resolver: zodResolver(artistSchema),
+    defaultValues: {
+      major: MajorType.ORCHESTRA,
+    },
   })
+  const fileUploader = useRef<HTMLInputElement>(null)
+
+  const openFileUploader = () => {
+    fileUploader.current?.click()
+  }
+
   const [isOpen, setIsOpen] = useState(false)
 
-  const onSubmit = (data: ArtistFormData) => {
-    console.log(data)
+  const onSubmit = async (data: ArtistFormData) => {
+    console.log("1")
+    if (!data.fileId) {
+      setError("file", { message: "File is required" })
+    }
+    console.log("2")
+    if (!data.major) {
+      setError("major", { message: "Major is required" })
+    }
+    console.log("errors", errors)
+
+    const payload: ArtistPayload = {
+      name: data.name,
+      contents: data.contents,
+      major: data.major as MajorType,
+      fileId: data.fileId as number,
+      password: data.password,
+    }
+    console.log("3")
+    try {
+      await createArtist(payload)
+      successToast("Artist created successfully")
+      queryClient.invalidateQueries({ queryKey: ["artists"] })
+      router.push("/")
+    } catch (error) {
+      console.error(error)
+      errorToast("Failed to create artist")
+    }
   }
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
   }
 
+  const uploadedFile = async (file: File) => {
+    try {
+      const response = await uploadFile(file)
+      if (response) {
+        setValue("file", file)
+        setValue("fileId", response.data.id)
+      }
+      successToast("File uploaded successfully")
+    } catch (error) {
+      console.error(error)
+      errorToast("Failed to upload file")
+    }
+  }
+
   return (
-    <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
-      <div>
+    <form className="mt-8 md:mt-[60px]">
+      <div className="flex flex-col gap-[20px] md:flex-row">
         <Input
           {...register("name")}
-          className="rounded-3xl px-4 placeholder:text-sm placeholder:text-coolgray"
+          className="h-[34px] w-[230px] rounded-3xl border-main px-4 placeholder:text-sm placeholder:text-coolgray focus:outline-none focus-visible:ring-0"
           placeholder="Name or Organization"
         />
-        <div
-          className={`relative block w-[154px] border border-main p-2 duration-200 md:hidden ${
-            isOpen ? "border-b-none rounded-t-3xl" : "rounded-3xl"
-          }`}
-        >
+        <MajorSelect
+          isOpen={isOpen}
+          handleOpen={handleOpen}
+          value={watch("major")}
+          setValue={(value: MajorType | null) => {
+            setValue("major", value)
+            handleOpen()
+          }}
+        />
+        <div className="relative flex w-[300px] items-center gap-2 rounded-3xl border border-main px-2 py-[6px] md:py-1">
           <button
-            className="flex w-full cursor-pointer justify-between rounded-3xl bg-main px-2 py-1 text-xs font-semibold text-white"
-            onClick={handleOpen}
+            type="button"
+            onClick={openFileUploader}
+            className="h-5 rounded-3xl bg-main px-2 py-[2px] text-xs font-semibold text-white"
           >
-            <p>{watch("major") || "All"}</p>
-
-            {isOpen ? (
-              <ChevronDownIcon className="h-4 w-4 transform transition-transform duration-200 ease-in-out" />
-            ) : (
-              <ChevronRightIcon className="h-4 w-4 transform transition-transform duration-200 ease-in-out" />
-            )}
+            Select file
           </button>
-          <Transition
-            show={isOpen}
-            enter="transition ease-out duration-200"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-150"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <div className="absolute left-[-1px] top-[100%] z-40 flex w-[154px] flex-col gap-3 rounded-b-3xl border-b border-l border-r border-main bg-white p-2 shadow-md">
+          {watch("file") ? (
+            <div className="flex items-center justify-between">
+              <p className="max-w-[180px] truncate text-xs">
+                {watch("file")?.name}
+              </p>
               <button
-                onClick={() => setValue("major", null)}
-                className="px-2 text-left text-xs font-semibold"
+                onClick={() => {
+                  setValue("file", null)
+                  setValue("fileId", null)
+                }}
               >
-                All
+                <XIcon className="h-4 w-4" />
               </button>
-              {Object.keys(MajorType).map(key => (
-                <button
-                  key={key}
-                  onClick={() => setValue("major", key as MajorType)}
-                  className="px-2 text-left text-xs font-semibold"
-                >
-                  {key}
-                </button>
-              ))}
             </div>
-          </Transition>
+          ) : (
+            <p className="text-xs text-main">No files selected</p>
+          )}
         </div>
       </div>
-      <Button type="submit">Submit</Button>
+      <div className="mt-6 md:mt-[36px]">
+        <CKEditor
+          value={watch("contents")}
+          onChange={value => setValue("contents", value)}
+        />
+      </div>
+      <div className="mt-4 flex justify-end gap-4">
+        <div>
+          <Input
+            {...register("password")}
+            className="h-8 w-[220px] rounded-3xl border-main px-4 placeholder:text-sm placeholder:text-coolgray focus:outline-none focus-visible:ring-0"
+            placeholder="Password"
+          />
+        </div>
+        <Button
+          type="button"
+          onClick={() => router.push("/")}
+          className="h-8 w-16 rounded-2xl border border-main bg-white text-xs font-semibold text-main md:h-8"
+        >
+          Cancel
+        </Button>
+        <Button
+          type="button"
+          onClick={handleSubmit(onSubmit)}
+          className="h-8 w-16 rounded-2xl bg-main text-xs font-semibold md:h-8"
+        >
+          Submit
+        </Button>
+      </div>
+
+      <FileUploader ref={fileUploader} uploadedFile={uploadedFile} />
     </form>
   )
 }

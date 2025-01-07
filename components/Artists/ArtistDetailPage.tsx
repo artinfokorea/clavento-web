@@ -43,7 +43,10 @@ export const ArtistDetailPage = ({ artist }: ArtistDetailPageProps) => {
         </div>
 
         <div className="">
-          <p className="text-xs font-bold">{artistDetail.contents}</p>
+          <div
+            className="text-xs font-bold"
+            dangerouslySetInnerHTML={{ __html: artistDetail.contents }}
+          />
         </div>
       </article>
     </div>
