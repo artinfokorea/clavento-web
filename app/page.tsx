@@ -4,7 +4,7 @@ import { Suspense } from "react"
 
 const page = async () => {
   return (
-    <main className="pb-20">
+    <main className="mx-auto max-w-screen-lg pb-20">
       <ListSearchForm placeholder="Explore Iconic musicians...">
         <h4 className="text-sm font-medium md:text-lg">
           Search the Sound of History
