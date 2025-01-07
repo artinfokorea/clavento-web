@@ -25,6 +25,7 @@ export const MajorSelect = ({
       }`}
     >
       <button
+        type="button"
         className="flex w-full cursor-pointer justify-between rounded-3xl bg-main px-2 py-[2px] text-xs font-semibold text-white"
         onClick={handleOpen}
       >
@@ -47,6 +48,7 @@ export const MajorSelect = ({
       >
         <div className="absolute left-[-1px] top-[100%] z-40 flex w-[154px] flex-col gap-3 rounded-b-3xl border-b border-l border-r border-main bg-white p-2 shadow-md">
           <button
+            type="button"
             onClick={() => setValue(null)}
             className="px-2 text-left text-xs font-semibold"
           >
@@ -54,6 +56,7 @@ export const MajorSelect = ({
           </button>
           {Object.keys(MajorType).map(key => (
             <button
+              type="button"
               key={key}
               onClick={() => setValue(key as MajorType)}
               className="px-2 text-left text-xs font-semibold"
