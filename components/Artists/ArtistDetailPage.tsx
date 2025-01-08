@@ -22,7 +22,7 @@ export const ArtistDetailPage = ({ artist }: ArtistDetailPageProps) => {
   return (
     <div className="mx-auto max-w-screen-md px-4">
       <div className="mb-8 flex items-center justify-between">
-        <div className="hidden w-full gap-2 md:flex md:basis-1/3">
+        <div className="hidden w-full gap-2 whitespace-nowrap md:flex md:basis-1/3">
           <h2 className="text-xl font-bold text-coolgray">
             {artistDetail.major}
           </h2>

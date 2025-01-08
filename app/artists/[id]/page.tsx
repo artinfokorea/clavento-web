@@ -14,16 +14,17 @@ export const generateMetadata = async ({
 
   const { data } = await getArtist(id)
 
-  const pageTitle = data.name
+  const artistName = data.name
+  const artistMajor = data.major
   const pageImage = data?.imageUrl
   const defaultImage = "/clavento.png"
 
   return {
-    title: `Clavento | ${pageTitle}`,
-    description: `Clavento | ${data.contents}`,
+    title: `${artistMajor} ${artistName}`,
+    description: `Clavento | ${artistName}`,
     openGraph: {
-      title: pageTitle,
-      description: `Clavento | ${data.contents}`,
+      title: `${artistMajor} ${artistName}`,
+      description: `Clavento | ${artistName}`,
       images: {
         url: pageImage || defaultImage,
         alt: "Clavento",
