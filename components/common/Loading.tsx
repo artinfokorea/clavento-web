@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const Spinner = ({ className }: Props) => {
-  return <span className={`loader ${className}`} />
+  return <span className={`ç ${className}`} />
 }
 
 export const Loading = () => {
