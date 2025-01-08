@@ -1,4 +1,5 @@
 import { ArtistListPage } from "@/components/Artists/ArtistListPage"
+import { ArtistSkeleton } from "@/components/Artists/ArtistSkeleton"
 import ListSearchForm from "@/components/common/ListSearchForm"
 import { Suspense } from "react"
 
@@ -10,7 +11,7 @@ const page = async () => {
           Search the Sound of History
         </h4>
       </ListSearchForm>
-      <Suspense>
+      <Suspense fallback={<ArtistSkeleton />}>
         <ArtistListPage />
       </Suspense>
     </main>
