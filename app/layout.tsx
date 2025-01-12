@@ -41,6 +41,13 @@ export const metadata: Metadata = {
       },
     ],
   },
+  verification: {
+    other: {
+      "google-site-verification": [
+        "c-D6aIWwqKh5Lp2vix0ysOfvffYE_Y9ZxeDOJ4jbPGo",
+      ],
+    },
+  },
 }
 
 export default function RootLayout({
